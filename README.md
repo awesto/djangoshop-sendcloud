@@ -23,8 +23,8 @@ key-pair. Then add these keys:
 
 ```
 SHOP_SENDCLOUD = {
-    'PUBLIC_KEY': '<public-key-as-delivered-by-SendCloud>',
-    'SECRET_KEY': '<secret-key-as-delivered-by-SendCloud>',
+    'API_KEY': '<public-key-as-delivered-by-SendCloud>',
+    'API_SECRET': '<secret-key-as-delivered-by-SendCloud>',
     'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 ```

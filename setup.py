@@ -18,7 +18,10 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
     'Topic :: Software Development :: Libraries :: Application Frameworks',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
 ]
@@ -26,7 +29,7 @@ CLASSIFIERS = [
 setup(
     author="Jacob Rief",
     author_email="jacob.rief@gmail.com",
-    name='djangoshop-stripe',
+    name='djangoshop-sendcloud',
     version=shop_sendcloud.__version__,
     description='SendCloud Shipping Provider Integration for django-shop',
     long_description=convert('README.md', 'rst'),

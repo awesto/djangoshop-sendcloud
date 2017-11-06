@@ -61,7 +61,7 @@ class SendcloudShippingModifierBase(ShippingModifier):
             'email': cart.customer.email,
             'country': shipping_address.country,
             'weight': str(cart.weight.quantize(Decimal('0.000'))),
-            'insured_value': cart.subtotal.as_integer(),
+            'insured_value': int(cart.subtotal),
         }
 
 

@@ -17,7 +17,6 @@ class OrderWorkflowMixin(object):
     }
     create_parcel_url = 'https://panel.sendcloud.sc/api/v2/parcels/'
     cancel_parcel_url = 'https://panel.sendcloud.sc/api/v2/parcels/{}/cancel'
-    parcel_label_url = 'https://panel.sendcloud.sc/api/v2/labels/{}'
     credentials = settings.SHOP_SENDCLOUD['API_KEY'], settings.SHOP_SENDCLOUD['API_SECRET']
     error_message = _("Parcel can not be delivered. Reason: {}")
 
@@ -51,12 +50,8 @@ class OrderWorkflowMixin(object):
                 custom=dict(admin=True, button_name=_("Print Shipping Label")))
     def print_shipping_label(self, by=None):
         """
-        Print the shipping label
+        Since creating a parcel object can fail, printing the shipping label is performed in method `clean()`
         """
-        # for delivery in self.delivery_set.filter(shipping_id__isnull=False, shipped_at=None):
-        #     parcel = {'id': delivery.shipping_id, 'request_label': True}
-        #     response = requests.put(self.create_parcel_url, json={'parcel': parcel}, auth=self.credentials)
-        #     assert response.status_code >= 200 and response.status_code <= 299
 
     def withdraw_from_delivery(self):
         for delivery in self.delivery_set.filter(shipping_id__isnull=False):

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -10,7 +11,6 @@ from shop.money.fields import MoneyField
 from shop.models.address import BaseShippingAddress, BaseBillingAddress, CountryField
 from shop.models.customer import BaseCustomer
 from shop.models.delivery import BaseDelivery, BaseDeliveryItem
-from shop.models.fields import JSONField
 
 
 class Customer(BaseCustomer):
@@ -97,6 +97,14 @@ class AddressModelMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    def as_text(self):
+        """
+        Return the address as plain text to be used for printing, etc.
+        """
+        template = get_template('shop_sendcloud/address.txt')
+        return template.render({'address': self})
+    as_text.short_description = _("Address")
 
 
 class ShippingAddress(BaseShippingAddress, AddressModelMixin):

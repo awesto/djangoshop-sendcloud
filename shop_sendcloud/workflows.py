@@ -46,11 +46,17 @@ class OrderWorkflowMixin(object):
             except Exception as exc:
                 raise ValidationError(self.error_message.format(exc))
 
-    @transition(field='status', source=['ready_for_delivery'], target='request_shipping_label',
+    @transition(field='status', source=['pack_the_goods'], target='request_shipping_label',
                 custom=dict(admin=True, button_name=_("Print Shipping Label")))
     def print_shipping_label(self, by=None):
         """
         Since creating a parcel object can fail, printing the shipping label is performed in method `clean()`
+        """
+
+    @transition(field='status', source=['request_shipping_label'], target='ready_for_delivery')
+    def prepare_for_delivery(self, by=None):
+        """
+        Prepare parcels for delivery
         """
 
     def withdraw_from_delivery(self):

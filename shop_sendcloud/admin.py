@@ -2,10 +2,13 @@
 from __future__ import unicode_literals
 
 import requests
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.conf.urls import url
 from django.http import HttpResponse
+
+from shop.models.delivery import DeliveryModel
 
 
 class SendCloudOrderAdminMixin(object):
@@ -43,4 +46,19 @@ class SendCloudOrderAdminMixin(object):
     def passthrough_shipping_label(self, request):
         label_url = request.GET.get('url')
         res = requests.get(label_url, auth=self.credentials)
-        return HttpResponse(res.content, status=res.status_code, content_type=res.headers['content-type'])
+        if res.status_code == 200:
+            # mark the parcel label as printed
+            try:
+                parcel_id = urlparse(label_url).path.split('/')[-1]
+                delivery = DeliveryModel.objects.get(shipping_id=parcel_id)
+            except DeliveryModel.DoesNotExist:
+                parcel_id = None
+            else:
+                delivery.order.prepare_for_delivery()
+                delivery.order.save()
+        else:
+            parcel_id = None
+        response = HttpResponse(res.content, status=res.status_code, content_type=res.headers['content-type'])
+        if parcel_id:
+            response['Content-Disposition'] = 'filename="parcel_label_{}.pdf"'.format(parcel_id)
+        return response

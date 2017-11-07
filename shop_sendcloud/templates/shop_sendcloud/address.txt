@@ -1,0 +1,5 @@
+{{ address.name }}{% if address.company_name %}
+{{ address.company_name }}{% endif %}
+{{ address.address }} {{ address.house_number }}
+{{ address.postal_code }} {{ address.city }}
+{{ address.get_country_display }}

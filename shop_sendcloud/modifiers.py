@@ -12,7 +12,7 @@ from shop.money import MoneyMaker
 
 from shop_sendcloud.models import ShippingMethod, ShippingDestination
 
-EUR = MoneyMaker('EUR')
+EUR = MoneyMaker('EUR')  # at SendCloud, everything is charged in Euros
 
 
 class SendcloudShippingModifierBase(ShippingModifier):

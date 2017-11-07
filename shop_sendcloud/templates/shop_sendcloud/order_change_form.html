@@ -4,6 +4,6 @@
 {% block after_related_objects %}
 	{{ block.super }}
 	{% for parcel_label_url in parcel_label_urls %}
-	<iframe class="shop-pdf-panel" name="pdf-{{ forloop.counter }}" src="{% url 'admin:print_shipping_label' %}?url={{ parcel_label_url|urlencode }}"></iframe>
+	<iframe class="shop-parcel-label" name="parcel_label_{{ forloop.counter }}" src="{% url 'admin:print_shipping_label' %}?url={{ parcel_label_url|urlencode }}"></iframe>
 	{% endfor %}
 {% endblock %}

@@ -37,7 +37,9 @@ setup(
     license='MIT License',
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
-    install_requires=[],
+    install_requires=[
+        'requests',
+    ],
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

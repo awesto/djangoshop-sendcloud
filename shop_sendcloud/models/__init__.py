@@ -10,7 +10,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from shop.money.fields import MoneyField
 from shop.models.address import BaseShippingAddress, BaseBillingAddress, CountryField
 from shop.models.customer import BaseCustomer
-from shop.models.delivery import BaseDelivery, BaseDeliveryItem
 
 
 class Customer(BaseCustomer):
@@ -57,6 +56,10 @@ class Customer(BaseCustomer):
         field_order.append('phone_number')
         return field_order
 
+    def as_text(self):
+        template = get_template('shop_sendcloud/customer.txt')
+        return template.render({'customer': self})
+
 
 class AddressModelMixin(models.Model):
     name = models.CharField(
@@ -79,8 +82,6 @@ class AddressModelMixin(models.Model):
     house_number = models.CharField(
         _("House number"),
         max_length=12,
-        blank=True,
-        null=True,
     )
 
     postal_code = models.CharField(
@@ -98,25 +99,25 @@ class AddressModelMixin(models.Model):
     class Meta:
         abstract = True
 
-    def as_text(self):
-        """
-        Return the address as plain text to be used for printing, etc.
-        """
-        template = get_template('shop_sendcloud/address.txt')
-        return template.render({'address': self})
-    as_text.short_description = _("Address")
-
 
 class ShippingAddress(BaseShippingAddress, AddressModelMixin):
     class Meta:
         verbose_name = _("Shipping Address")
         verbose_name_plural = _("Shipping Addresses")
 
+    def as_text(self):
+        template = get_template('shop_sendcloud/address.txt')
+        return template.render({'address': self})
+
 
 class BillingAddress(BaseBillingAddress, AddressModelMixin):
     class Meta:
         verbose_name = _("Billing Address")
         verbose_name_plural = _("Billing Addresses")
+
+    def as_text(self):
+        template = get_template('shop_sendcloud/address.txt')
+        return template.render({'address': self})
 
 
 class ShippingMethod(models.Model):
@@ -163,4 +164,4 @@ class ShippingDestination(models.Model):
     class Meta:
         verbose_name = _("Shipping Destination")
         verbose_name_plural = _("Shipping Destination")
-        unique_together = ['id', 'shipping_method']
+        unique_together = ['country', 'shipping_method']

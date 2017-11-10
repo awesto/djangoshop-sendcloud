@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 import requests
 from rest_framework import serializers
 from shop.conf import app_settings
+from shop.models.delivery import DeliveryItemModel
 from shop.serializers.bases import BaseOrderItemSerializer
 
 
@@ -59,7 +60,8 @@ class OrderItemSerializer(BaseOrderItemSerializer):
     parcel = serializers.SerializerMethodField()
 
     class Meta(BaseOrderItemSerializer.Meta):
-        fields = ['line_total', 'unit_price', 'product_code', 'quantity', 'summary', 'delivery_status', 'parcel', 'extra']
+        fields = ['line_total', 'unit_price', 'product_code', 'quantity', 'summary',
+                  'delivery_status', 'parcel', 'extra']
         list_serializer_class = OrderItemListSerializer
 
     def get_summary(self, order_item):
@@ -73,10 +75,13 @@ class OrderItemSerializer(BaseOrderItemSerializer):
         parcel = self.get_parcel(order_item)
         if parcel:
             return ugettext_lazy(parcel['status']['message'])
-        return ugettext_lazy("No shipping data available")
+        return ugettext_lazy("Purchase order issued")
 
     def get_parcel(self, order_item):
-        delivery = order_item.deliveryitem_set.get().delivery
+        try:
+            delivery = order_item.deliveryitem_set.get().delivery
+        except DeliveryItemModel.DoesNotExist:
+            return
         parcel_url = self.parcel_url.format(parcel_id=delivery.shipping_id)
         parcel = cache.get(parcel_url)
         if parcel is None:

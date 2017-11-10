@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 from django.conf.urls import url
 from django.http import HttpResponse
+from django.utils import timezone
 
 from shop.models.delivery import DeliveryModel
 
@@ -24,17 +25,17 @@ class SendCloudOrderAdminMixin(object):
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
         if obj and obj.status == 'request_shipping_label':
-            for delivery in obj.delivery_set.filter(shipping_id__isnull=False, shipped_at__isnull=True):
-                self.populate_context(delivery.shipping_id, context)
+            context.setdefault('parcel_label_urls', [])
+            try:
+                for delivery in obj.delivery_set.filter(shipping_id__isnull=False, shipped_at__isnull=True):
+                    url = self.parcel_label_url.format(delivery.shipping_id)
+                    response = requests.get(url, auth=self.credentials)
+                    if response.status_code == 200:
+                        parcel = response.json()
+                        context['parcel_label_urls'].append(parcel['label']['normal_printer'][2])  # TODO: make this configurable
+            except:
+                pass
         return super(SendCloudOrderAdminMixin, self).render_change_form(request, context, add, change, form_url, obj)
-
-    def populate_context(self, parcel_id, context):
-        context.setdefault('parcel_label_urls', [])
-        url = self.parcel_label_url.format(parcel_id)
-        response = requests.get(url, auth=self.credentials)
-        if response.status_code == 200:
-            parcel = response.json()
-            context['parcel_label_urls'].append(parcel['label']['normal_printer'][2])
 
     def get_urls(self):
         my_urls = [
@@ -54,6 +55,8 @@ class SendCloudOrderAdminMixin(object):
             except DeliveryModel.DoesNotExist:
                 parcel_id = None
             else:
+                delivery.shipped_at = timezone.now()
+                delivery.save()
                 delivery.order.prepare_for_delivery()
                 delivery.order.save()
         else:

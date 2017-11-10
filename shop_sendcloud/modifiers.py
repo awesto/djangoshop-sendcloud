@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 
+from django.db.utils import OperationalError
 from django.utils.translation import ugettext_lazy as _
 
 from shop.modifiers.pool import cart_modifiers_pool
@@ -50,26 +51,32 @@ class SendcloudShippingModifierBase(ShippingModifier):
 
     def get_sendcloud_parcel(self, cart):
         shipping_address = cart.shipping_address or cart.billing_address
-        return {
+        data = {
             'name': shipping_address.name,
-            'company_name': shipping_address.company_name,
             'address': shipping_address.address,
             'house_number': shipping_address.house_number,
             'city': shipping_address.city,
             'postal_code': shipping_address.postal_code,
-            'telephone': str(cart.customer.phone_number),
             'email': cart.customer.email,
             'country': shipping_address.country,
             'weight': str(cart.weight.quantize(Decimal('0.000'))),
             'insured_value': int(cart.subtotal),
         }
-
+        if shipping_address.company_name:
+            data['company_name'] = shipping_address.company_name
+        if cart.customer.phone_number:
+            data['telephone'] = str(cart.customer.phone_number)
+        return data
 
 class SendcloudShippingModifiers(list):
     """
     A list of possible shipping modifiers for this provider
     """
     def __init__(self):
+        try:
+            ShippingMethod.objects.exists()
+        except OperationalError:
+            return  # in case the table does not exist yet
         for carrier, in ShippingMethod.objects.values_list('carrier').distinct():
             name = 'Sendcloud{}Modifier'.format(carrier.title())
             attrs = {

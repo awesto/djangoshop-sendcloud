@@ -2,12 +2,12 @@
 from __future__ import unicode_literals
 
 import requests
-from urllib.parse import urlparse
 
 from django.conf import settings
 from django.conf.urls import url
 from django.http import HttpResponse
 from django.utils import timezone
+from django.utils.six.moves.urllib.parse import urlparse
 
 from shop.models.delivery import DeliveryModel
 

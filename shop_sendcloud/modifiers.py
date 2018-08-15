@@ -68,6 +68,7 @@ class SendcloudShippingModifierBase(ShippingModifier):
             data['telephone'] = str(cart.customer.phone_number)
         return data
 
+
 class SendcloudShippingModifiers(list):
     """
     A list of possible shipping modifiers for this provider

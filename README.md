@@ -25,13 +25,40 @@ key-pair. Then add these keys:
 SHOP_SENDCLOUD = {
     'API_KEY': '<public-key-as-delivered-by-SendCloud>',
     'API_SECRET': '<secret-key-as-delivered-by-SendCloud>',
-    'PURCHASE_DESCRIPTION': _("Thanks for purchasing at MyShop"),
 }
 ```
 
 Add ``'shop_sendcloud.modifiers.SendcloudShippingModifier'`` to the list of ``SHOP_CART_MODIFIERS``.
 
 Add ``'shop_sendcloud.shipping.OrderWorkflowMixin'`` to the list of ``SHOP_ORDER_WORKFLOWS``.
+
+If you run **django-SHOP** with partial delivery, add:
+
+``SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'``
+
+and append to
+
+```
+SHOP_ORDER_WORKFLOWS = [
+    ...
+    'shop_sendcloud.workflows.CommonOrderWorkflowMixin',
+    'shop.shipping.workflows.PartialDeliveryWorkflowMixin',
+]
+```
+
+otherwise, without partial delivery, append to:
+
+```
+SHOP_ORDER_WORKFLOWS = [
+    ...
+    'shop_sendcloud.workflows.SingularOrderWorkflowMixin',
+    'shop.shipping.workflows.CommissionGoodsWorkflowMixin',
+]
+```
+
+
+Since SendClouds set the Shipping ID for us, we disable that field in the
+backend, using ``SHOP_MANUAL_SHIPPING_ID = False``.
 
 
 ## Changes

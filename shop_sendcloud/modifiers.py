@@ -10,7 +10,6 @@ from shop.modifiers.pool import cart_modifiers_pool
 from shop.serializers.cart import ExtraCartRow
 from shop.shipping.modifiers import ShippingModifier
 from shop.money import MoneyMaker
-
 from shop_sendcloud.models import ShippingMethod, ShippingDestination
 
 EUR = MoneyMaker('EUR')  # at SendCloud, everything is charged in Euros
@@ -60,7 +59,7 @@ class SendcloudShippingModifierBase(ShippingModifier):
             'email': cart.customer.email,
             'country': shipping_address.country,
             'weight': str(cart.weight.quantize(Decimal('0.000'))),
-            'insured_value': int(cart.subtotal),
+            'insured_value': int(cart.subtotal) * 100,
         }
         if shipping_address.company_name:
             data['company_name'] = shipping_address.company_name

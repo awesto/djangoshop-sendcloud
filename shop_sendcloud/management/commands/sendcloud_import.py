@@ -22,7 +22,10 @@ class Command(BaseCommand):
 
     def handle(self, verbosity, *args, **options):
         response = requests.get(self.download_url, auth=self.credentials)
-        for sm in response.json()['shipping_methods']:
+        if response.status_code != 200:
+            CommandError("Sendcloud responded with an error:")
+        response_data = response.json()
+        for sm in response_data['shipping_methods']:
             if isinstance(self.INCLUDE_CARRIERES, (list, tuple)):
                 if sm['carrier'] not in self.INCLUDE_CARRIERES:
                     continue
@@ -35,9 +38,11 @@ class Command(BaseCommand):
             sm.pop('service_point_input', None)
             countries = sm.pop('countries', [])
             try:
-                shipping_method, created = ShippingMethod.objects.get_or_create(id=id, defaults=sm)
-                if not created:
-                    shipping_method.destinations.all().delete()
+                shipping_method, created = ShippingMethod.objects.update_or_create(id=id, defaults=sm)
+                if created:
+                    destination_ids = []
+                else:
+                    destination_ids = list(shipping_method.destinations.values_list('id', flat=True))
             except Exception as ex:
                 raise CommandError("In id={}: {}".format(id, ex))
             for dst in countries:
@@ -47,6 +52,11 @@ class Command(BaseCommand):
                 dst.pop('name', None)
                 dst.setdefault('price', default_price)
                 try:
-                    ShippingDestination.objects.get_or_create(shipping_method=shipping_method, country=country, defaults=dst)
+                    destination, created = ShippingDestination.objects.update_or_create(
+                        shipping_method=shipping_method, country=country, defaults=dst)
+                    if not created and destination.id in destination_ids:
+                        destination_ids.remove(destination.id)
                 except Exception as ex:
                     raise CommandError("In shipping_id={} country={}: {}".format(shipping_method.id, iso_3, ex))
+            # remove destinations which haven't been updated
+            shipping_method.destinations.filter(id__in=destination_ids).delete()

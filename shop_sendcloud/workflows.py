@@ -61,9 +61,9 @@ class SingularOrderWorkflowMixin(SendclouldWorkflowBase):
             try:
                 response = requests.post(self.create_parcel_url, json={'parcel': parcel}, auth=self.credentials)
                 response_data = response.json()
-                if response.status_code >= 200 and response.status_code <= 299:
+                if response.status_code == 200:
                     if not response_data['parcel'].get('label'):
-                        raise Exception(_("Unable to create shipping label"))
+                        raise Exception(_("Missing shipping label in response data['parcel']"))
                     DeliveryModel.objects.create(order=self, shipping_id=response_data['parcel']['id'])
                 else:
                     raise Exception(response_data['error']['message'])

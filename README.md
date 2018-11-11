@@ -67,6 +67,10 @@ Since SendClouds sets the Shipping ID for us, we disable that field in the
 backend, using `SHOP_MANUAL_SHIPPING_ID = False`.
 
 
+Since **SendCloud** requires a specific address model, ensure that you "materialize" the one
+provided with **djangoshop-sendcloud** and not the defaults from `shop/models/defaults/address`.
+
+
 ## Initialization
 
 Create two additional database tables as required by **djangoshop-sendcloud**:

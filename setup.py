@@ -38,7 +38,7 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
-        'requests',
+        'requests', 'django-phonenumber-field', 'phonenumbers', 
     ],
     packages=find_packages(),
     include_package_data=True,

@@ -31,7 +31,7 @@ class SendcloudShippingModifierBase(ShippingModifier):
 
         destinations = ShippingDestination.objects.filter(
             shipping_method__carrier=self.carrier,
-            country=cart.shipping_address.country,
+            country=cart.shipping_address.country if cart.shipping_address else None,
             shipping_method__min_weight__lte=cart.weight,
             shipping_method__max_weight__gte=cart.weight,
         ).order_by('price')
@@ -76,8 +76,8 @@ class SendcloudShippingModifiers(list):
         try:
             ShippingMethod.objects.exists()
         except OperationalError:
-            return  # in case the table does not exist yet
-        for carrier, in ShippingMethod.objects.values_list('carrier').distinct():
+            return  # in case the database table does not exist yet
+        for carrier in ShippingMethod.objects.values_list('carrier', flat=True).distinct():
             name = 'Sendcloud{}Modifier'.format(carrier.title())
             attrs = {
                 'carrier': carrier,

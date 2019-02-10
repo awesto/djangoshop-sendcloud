@@ -3,11 +3,9 @@ from __future__ import unicode_literals
 
 from decimal import Decimal
 import requests
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-
 from shop.models.delivery import BaseDelivery
 from shop_sendcloud.models import ShippingDestination
 

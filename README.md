@@ -58,8 +58,8 @@ SHOP_ORDER_WORKFLOWS = [
 Add the **Public Key** and the **Secret Key** as provided by SendCloud (see above):
 ```python
 SHOP_SENDCLOUD = {
-  'API_KEY': '<public-key-as-delivered-by-SendCloud>',
-  'API_SECRET': '<secret-key-as-delivered-by-SendCloud>',
+  'API_KEY': '<public-key-as-provided-by-SendCloud>',
+  'API_SECRET': '<secret-key-as-provided-by-SendCloud>',
 }
 ```
 

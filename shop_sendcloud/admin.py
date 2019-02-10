@@ -2,13 +2,11 @@
 from __future__ import unicode_literals
 
 import requests
-
 from django.conf import settings
 from django.conf.urls import url
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.six.moves.urllib.parse import urlparse
-
 from shop.models.delivery import DeliveryModel
 
 
@@ -38,10 +36,11 @@ class SendCloudOrderAdminMixin(object):
         return super(SendCloudOrderAdminMixin, self).render_change_form(request, context, add, change, form_url, obj)
 
     def get_urls(self):
-        my_urls = [
+        my_urls = super(SendCloudOrderAdminMixin, self).get_urls()
+        my_urls.append(
             url(r'^print_shipping_label/$', self.admin_site.admin_view(self.passthrough_shipping_label),
                 name='print_shipping_label'),
-        ] + super(SendCloudOrderAdminMixin, self).get_urls()
+        )
         return my_urls
 
     def passthrough_shipping_label(self, request):

@@ -22,7 +22,8 @@ class SendCloudOrderAdminMixin(object):
         }
 
     def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
-        if obj and obj.status == 'request_shipping_label':
+        assert obj is not None
+        if obj.status == 'ready_for_delivery':
             context.setdefault('parcel_label_urls', [])
             try:
                 for delivery in obj.delivery_set.filter(shipping_id__isnull=False, shipped_at__isnull=True):
@@ -36,11 +37,11 @@ class SendCloudOrderAdminMixin(object):
         return super(SendCloudOrderAdminMixin, self).render_change_form(request, context, add, change, form_url, obj)
 
     def get_urls(self):
-        my_urls = super(SendCloudOrderAdminMixin, self).get_urls()
-        my_urls.append(
+        my_urls = [
             url(r'^print_shipping_label/$', self.admin_site.admin_view(self.passthrough_shipping_label),
                 name='print_shipping_label'),
-        )
+        ]
+        my_urls.extend(super(SendCloudOrderAdminMixin, self).get_urls())
         return my_urls
 
     def passthrough_shipping_label(self, request):
@@ -55,9 +56,7 @@ class SendCloudOrderAdminMixin(object):
                 parcel_id = None
             else:
                 delivery.shipped_at = timezone.now()
-                delivery.save()
-                delivery.order.prepare_for_delivery()
-                delivery.order.save()
+                delivery.save(update_fields=['shipped_at'])
         else:
             parcel_id = None
         response = HttpResponse(res.content, status=res.status_code, content_type=res.headers['content-type'])

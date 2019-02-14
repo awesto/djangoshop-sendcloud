@@ -23,7 +23,8 @@ class Command(BaseCommand):
     def handle(self, verbosity, *args, **options):
         response = requests.get(self.download_url, auth=self.credentials)
         if response.status_code != 200:
-            CommandError("Sendcloud responded with an error:")
+            msg = "Failed to import carriers from SendCloud. Reason: {message}"
+            raise CommandError(msg.format(**response.json()['error']))
         response_data = response.json()
         for sm in response_data['shipping_methods']:
             if isinstance(self.INCLUDE_CARRIERES, (list, tuple)):

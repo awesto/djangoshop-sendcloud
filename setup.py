@@ -2,15 +2,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from setuptools import setup, find_packages
-import shop_sendcloud
-try:
-    from pypandoc import convert
-except ImportError:
-    import io
+from shop_sendcloud import __version__
 
-    def convert(filename, fmt):
-        with io.open(filename, encoding='utf-8') as fd:
-            return fd.read()
+with open('README.md', 'r') as fh:
+    long_description = fh.read()
 
 CLASSIFIERS = [
     'Environment :: Web Environment',
@@ -19,7 +14,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Topic :: Software Development :: Libraries :: Application Frameworks',
@@ -30,15 +24,19 @@ setup(
     author="Jacob Rief",
     author_email="jacob.rief@gmail.com",
     name='djangoshop-sendcloud',
-    version=shop_sendcloud.__version__,
+    version=__version__,
     description='SendCloud Shipping Provider Integration for django-shop',
-    long_description=convert('README.md', 'rst'),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/jrief/djangoshop-sendcloud',
     license='MIT License',
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
-        'requests', 'django-phonenumber-field', 'phonenumbers', 
+        'requests',
+        'django-phonenumber-field',
+        'phonenumbers',
+        'django-shop>=1.0,<1.1'
     ],
     packages=find_packages(),
     include_package_data=True,

@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import requests
 from django.conf import settings
 from django.conf.urls import url
+from django.contrib import messages
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.six.moves.urllib.parse import urlparse
@@ -33,7 +34,7 @@ class SendCloudOrderAdminMixin(object):
                         parcel = response.json()
                         context['parcel_label_urls'].append(parcel['label']['normal_printer'][2])  # TODO: make this configurable
             except:
-                pass
+                messages.add_message(request, messages.INFO, "No SendCloud label could be printed.")
         return super(SendCloudOrderAdminMixin, self).render_change_form(request, context, add, change, form_url, obj)
 
     def get_urls(self):

@@ -6,7 +6,7 @@ import math
 import requests
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ValidationError
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 from django.utils.translation import ugettext_lazy as _
 from shop.modifiers.pool import cart_modifiers_pool
 from shop.serializers.cart import ExtraCartRow
@@ -132,7 +132,7 @@ class SendcloudShippingModifiers(list):
     def __init__(self):
         try:
             ShippingMethod.objects.exists()
-        except OperationalError:
+        except (OperationalError, ProgrammingError):
             return  # in case the database table does not exist yet
         for carrier in ShippingMethod.objects.values_list('carrier', flat=True).distinct():
             name = 'Sendcloud{}Modifier'.format(carrier.title())

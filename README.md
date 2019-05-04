@@ -1,14 +1,14 @@
-# Sendcloud Shipping Provider Integration for django-SHOP
+# SendCloud Shipping Provider Integration for django-SHOP
 
 This integrates the **SendCloud** API for **django-SHOP** version 1.0 and above.
 
 
 ## Installation
 
-for django-SHOP version 1 and later:
+for django-SHOP version 1.0 and later:
 
 ```
-pip install djangoshop-sendcloud
+pip install djangoshop-sendcloud<1.1
 ```
 
 
@@ -38,6 +38,7 @@ Add `'shop_sendcloud.shipping.OrderWorkflowMixin'` to the list of `SHOP_ORDER_WO
 If you run **django-SHOP** with partial delivery, replace the `OrderItemSerializer` with the one provided:
 `SHOP_ORDER_ITEM_SERIALIZER = 'shop_sendcloud.serializers.OrderItemSerializer'`
 and change the workflow to:
+
 ```python
 SHOP_ORDER_WORKFLOWS = [
     ...
@@ -47,6 +48,7 @@ SHOP_ORDER_WORKFLOWS = [
 ```
 
 Otherwise, without partial delivery, change the workflow to:
+
 ```python
 SHOP_ORDER_WORKFLOWS = [
     ...
@@ -56,39 +58,41 @@ SHOP_ORDER_WORKFLOWS = [
 ```
 
 Add the **Public Key** and the **Secret Key** as provided by SendCloud (see above):
+
 ```python
 SHOP_SENDCLOUD = {
-  'API_KEY': '<public-key-as-delivered-by-SendCloud>',
-  'API_SECRET': '<secret-key-as-delivered-by-SendCloud>',
+  'API_KEY': '<public-key-as-provided-by-SendCloud>',
+  'API_SECRET': '<secret-key-as-provided-by-SendCloud>',
 }
 ```
 
 Since SendClouds sets the Shipping ID for us, we disable that field in the
 backend, using `SHOP_MANUAL_SHIPPING_ID = False`.
 
-
-Since **SendCloud** requires a specific address model, ensure that you "materialize" the one
+**SendCloud** requires a specific address model, therefore ensure that you "materialize" the one
 provided with **djangoshop-sendcloud** and not the defaults from `shop/models/defaults/address`.
 
 
 ## Initialization
 
 Create two additional database tables as required by **djangoshop-sendcloud**:
+
 ```bash
 python manange.py migrate djangoshop_sendcloud
 ```
 
-Finally load all possible shipping options into your shop:
+Finally, load all possible shipping options into your shop:
+
 ```bash
 python manange.py sendcloud_import
 ```
-remember to run this job on a regular basis, say once a month, to update shipping prices.
+remember to run this job on a regular basis, say once a week, to update shipping prices.
 
 
 ## Usage
 
 When **django-SHOP** renders the form **Shipping Method** inside the checkout view, additional
-options will be available. For each carrier configured in the SendCloud backend, an extra radio
+options will be available. For each carrier configured in the **SendCloud** backend, an extra radio
 button appears. Whatever the customer selects, will be stored inside **django-SHOP**'s `OrderModel`.
 
 In the Django Admin backend, only after fulfilling the order, a new button apprears named

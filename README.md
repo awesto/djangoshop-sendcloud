@@ -72,6 +72,14 @@ backend, using `SHOP_MANUAL_SHIPPING_ID = False`.
 **SendCloud** requires a specific address model, therefore ensure that you "materialize" the one
 provided with **djangoshop-sendcloud** and not the defaults from `shop/models/defaults/address`.
 
+Typically, it's enough to import the alternative classes for `BillingAddress`, `ShippingAddress`
+and `Customer` into `models.py` of your merchant implementation:
+
+```python
+from shop_sendcloud.models.address import BillingAddress, ShippingAddress
+from shop_sendcloud.models.customer import Customer
+```
+
 
 ## Initialization
 

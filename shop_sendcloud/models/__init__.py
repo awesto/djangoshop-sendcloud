@@ -42,6 +42,7 @@ class ShippingDestination(models.Model):
     shipping_method = models.ForeignKey(
         ShippingMethod,
         related_name='destinations',
+        on_delete=models.CASCADE,
     )
 
     country = models.CharField(max_length=3)

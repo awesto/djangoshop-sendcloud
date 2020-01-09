@@ -110,5 +110,8 @@ forwards it to the Django Admin interface, from where it can be printed out.
 
 ## Changes
 
+### 1.0.1
+* Adopt Models to work with Django>2.
+
 ### 1.0
 * Initial working release.

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.conf import settings
 from django.core.cache import cache
 from django.core import exceptions
@@ -46,7 +43,7 @@ class OrderItemListSerializer(serializers.ListSerializer):
             queryset = data.order_by('deliveryitem__delivery')
         except exceptions.FieldError:
             queryset = data.all()
-        return super(OrderItemListSerializer, self).to_representation(queryset)
+        return super().to_representation(queryset)
 
 
 class OrderItemSerializer(BaseOrderItemSerializer):

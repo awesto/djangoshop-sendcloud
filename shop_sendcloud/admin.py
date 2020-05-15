@@ -15,7 +15,7 @@ class SendCloudOrderAdminMixin:
     credentials = settings.SHOP_SENDCLOUD['API_KEY'], settings.SHOP_SENDCLOUD['API_SECRET']
 
     class Media:
-        js = ['shop/admin/js/order_change_form.js']
+        js = ['admin/js/jquery.init.js', 'shop/admin/js/order_change_form.js']
         css = {
             'all': ['shop/admin/css/order_change_form.css']
         }

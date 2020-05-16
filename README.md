@@ -106,12 +106,3 @@ button appears. Whatever the customer selects, will be stored inside **django-SH
 In the Django Admin backend, only after fulfilling the order, a new button apprears named
 **PRINT SHIPPING LABEL**. Clicking on that button fetches a PDF document from the SendCloud API and
 forwards it to the Django Admin interface, from where it can be printed out.
-
-
-## Changes
-
-### 1.0.1
-* Adopt Models to work with Django>2.
-
-### 1.0
-* Initial working release.

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from decimal import Decimal
 import math
 import requests
@@ -32,13 +29,15 @@ class SendcloudShippingModifierBase(ShippingModifier):
         return (self.identifier, qs.first().name)
 
     def add_extra_cart_row(self, cart, request):
-        if not self.is_active(cart) and len(cart_modifiers_pool.get_shipping_modifiers()) > 1:
+        shipping_modifiers = cart_modifiers_pool.get_shipping_modifiers()
+        if not self.is_active(cart.extra.get('shipping_modifier')) and len(shipping_modifiers) > 1:
             return
 
         weight = max(cart.weight, Decimal('0.001')).quantize(Decimal('0.000'))
+        destination_country = cart.shipping_address.country if cart.shipping_address else None
         cheapest_destination = ShippingDestination.objects.filter(
             shipping_method__carrier=self.carrier,
-            country=cart.shipping_address.country if cart.shipping_address else None,
+            country=destination_country,
             shipping_method__min_weight__lte=weight,
             shipping_method__max_weight__gte=weight,
         ).order_by('price').first()
@@ -82,13 +81,13 @@ class SendcloudShippingModifierBase(ShippingModifier):
             raise ImproperlyConfigured(msg)
         carrier = delivery.order.extra['shipping_modifier'][len('sendcloud:'):]
         destination_country = delivery.order.extra['sendcloud_data']['parcel']['country']
-        if delivery.order.associate_with_delivery_items:
-            delivery_items = delivery.deliveryitem_set.all()
-            weight = sum([di.item.quantity * Decimal(di.item.product.get_weight()) for di in delivery_items])
+        if delivery.order.associate_with_delivery:
+            delivery_items = delivery.items.all()
+            weight = sum(di.item.quantity * Decimal(di.item.product.get_weight()) for di in delivery_items)
             weight = max(weight, Decimal('0.001')).quantize(Decimal('0.000'))
         else:
-            weight = delivery.order.extra['sendcloud_data']['parcel']['weight']
-        insured_value = sum([di.item.line_total for di in delivery_items])
+            weight = Decimal(delivery.order.extra['sendcloud_data']['parcel']['weight'])
+        insured_value = sum(di.item.line_total for di in delivery_items)
         cheapest_destination = ShippingDestination.objects.filter(
             shipping_method__carrier=carrier,
             country=destination_country,

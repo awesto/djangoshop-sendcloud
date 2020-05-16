@@ -1,23 +1,21 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import requests
+from urllib.parse import urlparse
+
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import messages
 from django.http import HttpResponse
 from django.utils import timezone
-from django.utils.six.moves.urllib.parse import urlparse
 from shop.models.delivery import DeliveryModel
 
 
-class SendCloudOrderAdminMixin(object):
+class SendCloudOrderAdminMixin:
     change_form_template = 'shop_sendcloud/order_change_form.html'
     parcel_label_url = 'https://panel.sendcloud.sc/api/v2/labels/{}'
     credentials = settings.SHOP_SENDCLOUD['API_KEY'], settings.SHOP_SENDCLOUD['API_SECRET']
 
     class Media:
-        js = ['shop/admin/js/order_change_form.js']
+        js = ['admin/js/jquery.init.js', 'shop/admin/js/order_change_form.js']
         css = {
             'all': ['shop/admin/css/order_change_form.css']
         }
@@ -35,14 +33,14 @@ class SendCloudOrderAdminMixin(object):
                         context['parcel_label_urls'].append(parcel['label']['normal_printer'][2])  # TODO: make this configurable
             except:
                 messages.add_message(request, messages.INFO, "No SendCloud label could be printed.")
-        return super(SendCloudOrderAdminMixin, self).render_change_form(request, context, add, change, form_url, obj)
+        return super().render_change_form(request, context, add, change, form_url, obj)
 
     def get_urls(self):
         my_urls = [
             url(r'^print_shipping_label/$', self.admin_site.admin_view(self.passthrough_shipping_label),
                 name='print_shipping_label'),
         ]
-        my_urls.extend(super(SendCloudOrderAdminMixin, self).get_urls())
+        my_urls.extend(super().get_urls())
         return my_urls
 
     def passthrough_shipping_label(self, request):

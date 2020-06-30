@@ -5,10 +5,10 @@ This integrates the **SendCloud** API for **django-SHOP** version 1.0 and above.
 
 ## Installation
 
-for django-SHOP version 1.0 and later:
+For django-SHOP version 1.2 and later:
 
 ```
-pip install djangoshop-sendcloud<1.1
+pip install djangoshop-sendcloud
 ```
 
 
@@ -31,7 +31,15 @@ In `settings.py` of the merchant's project:
 
 Add `'shop_sendcloud'` to `INSTALLED_APPS`.
 
-Add `'shop_sendcloud.modifiers.SendcloudShippingModifier'` to the list of `SHOP_CART_MODIFIERS`.
+Add these two cart modifiers:
+
+```python
+SHOP_CART_MODIFIERS = [ 
+    ...
+    'shop_sendcloud.modifiers.SendcloudShippingModifiers',
+    'shop.modifiers.defaults.WeightedCartModifier',
+]
+```
 
 Add `'shop_sendcloud.shipping.OrderWorkflowMixin'` to the list of `SHOP_ORDER_WORKFLOWS`.
 
@@ -89,7 +97,7 @@ Create two additional database tables as required by **djangoshop-sendcloud**:
 python manange.py migrate djangoshop_sendcloud
 ```
 
-Finally, load all possible shipping options into your shop:
+Next, load all possible shipping options into your shop:
 
 ```bash
 python manange.py sendcloud_import

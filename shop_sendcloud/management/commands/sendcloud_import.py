@@ -1,3 +1,4 @@
+from shop_sendcloud.models.sender_adress import SendCloudSenderAddress
 import requests
 
 from django.conf import settings
@@ -13,9 +14,11 @@ EUR = MoneyMaker('EUR')
 class Command(BaseCommand):
     help = _("Fetch shipping method fees from SendCloud.")
     download_url = 'https://panel.sendcloud.sc/api/v2/shipping_methods'
+    address_url = 'https://panel.sendcloud.sc/api/v2/user/addresses/sender'
     credentials = settings.SHOP_SENDCLOUD['API_KEY'], settings.SHOP_SENDCLOUD['API_SECRET']
     INCLUDE_CARRIERES = settings.SHOP_SENDCLOUD.get('INCLUDE_CARRIERES')
     EXCLUDE_CARRIERES = settings.SHOP_SENDCLOUD.get('EXCLUDE_CARRIERES', ['sendcloud'])
+    use_service_point = settings.SHOP_SENDCLOUD['USE_SERVICE_POINTS']
 
     def handle(self, verbosity, *args, **options):
         response = requests.get(self.download_url, auth=self.credentials)
@@ -29,6 +32,10 @@ class Command(BaseCommand):
                     continue
             elif isinstance(self.EXCLUDE_CARRIERES, (list, tuple)):
                 if sm['carrier'] in self.EXCLUDE_CARRIERES:
+                    continue
+            
+            if not self.use_service_point:
+                if sm['service_point_input'] == 'required':
                     continue
 
             id = sm.pop('id')
@@ -58,3 +65,12 @@ class Command(BaseCommand):
                     raise CommandError("In shipping_id={} country={}: {}".format(shipping_method.id, iso_3, ex))
             # remove destinations which haven't been updated
             shipping_method.destinations.filter(id__in=destination_ids).delete()
+        #get all shipping addresses
+        address_response = requests.get(self.address_url, auth=self.credentials)
+        addresses  =address_response.json()
+        for address in addresses['sender_addresses']:
+            if SendCloudSenderAddress.objects.filter(id=address['id']).exists():
+                continue
+            else:
+                SendCloudSenderAddress.objects.create(**address)
+

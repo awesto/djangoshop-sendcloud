@@ -101,6 +101,8 @@ class SendcloudShippingModifierBase(ShippingModifier):
         sender_adress = SendCloudSenderAddress.objects.filter(country=destination_country).first()
         if not sender_adress:
             sender_adress = SendCloudSenderAddress.objects.get(default_address=True)
+        if not sender_adress:
+            raise Exception(_('Check Sendcloud sender addresses and mark at least one as default'))
         parcel = dict(
             delivery.order.extra['sendcloud_data']['parcel'],
             sender_address=sender_adress.id,

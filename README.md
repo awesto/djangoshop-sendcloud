@@ -104,6 +104,8 @@ python manange.py sendcloud_import
 ```
 remember to run this job on a regular basis, say once a week, to update shipping prices.
 
+After you ran the import successfully got to admin page, and register a Sendcloud shipping address
+as you default address.
 
 ## Usage
 
@@ -114,3 +116,9 @@ button appears. Whatever the customer selects, will be stored inside **django-SH
 In the Django Admin backend, only after fulfilling the order, a new button apprears named
 **PRINT SHIPPING LABEL**. Clicking on that button fetches a PDF document from the SendCloud API and
 forwards it to the Django Admin interface, from where it can be printed out.
+
+### Service Points
+
+Currently service points are not supported, because it involves customers select their service point
+and then adding that to the order. So service points will be excluded from the import and not be 
+available as shipping method for customers.

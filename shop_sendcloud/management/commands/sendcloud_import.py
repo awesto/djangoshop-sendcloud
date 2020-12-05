@@ -1,4 +1,3 @@
-from shop_sendcloud.models.sender_adress import SendCloudSenderAddress
 import requests
 
 from django.conf import settings
@@ -7,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from shop.money import MoneyMaker
 from shop_sendcloud.models import ShippingMethod, ShippingDestination
+from shop_sendcloud.models.sender_adress import SendCloudSenderAddress
 
 EUR = MoneyMaker('EUR')
 
@@ -18,7 +18,6 @@ class Command(BaseCommand):
     credentials = settings.SHOP_SENDCLOUD['API_KEY'], settings.SHOP_SENDCLOUD['API_SECRET']
     INCLUDE_CARRIERES = settings.SHOP_SENDCLOUD.get('INCLUDE_CARRIERES')
     EXCLUDE_CARRIERES = settings.SHOP_SENDCLOUD.get('EXCLUDE_CARRIERES', ['sendcloud'])
-    use_service_point = settings.SHOP_SENDCLOUD['USE_SERVICE_POINTS']
 
     def handle(self, verbosity, *args, **options):
         response = requests.get(self.download_url, auth=self.credentials)
@@ -34,9 +33,9 @@ class Command(BaseCommand):
                 if sm['carrier'] in self.EXCLUDE_CARRIERES:
                     continue
             
-            if not self.use_service_point:
-                if sm['service_point_input'] == 'required':
-                    continue
+            if sm['service_point_input'] == 'required': 
+                #no service point selection yet implemented, so we skip
+                continue
 
             id = sm.pop('id')
             default_price = sm.pop('price')
@@ -69,8 +68,6 @@ class Command(BaseCommand):
         address_response = requests.get(self.address_url, auth=self.credentials)
         addresses  =address_response.json()
         for address in addresses['sender_addresses']:
-            if SendCloudSenderAddress.objects.filter(id=address['id']).exists():
-                continue
-            else:
-                SendCloudSenderAddress.objects.create(**address)
-
+            id = address['id']
+            address.pop('id', None)
+            SendCloudSenderAddress.objects.update_or_create(id=id, defaults=address)

@@ -1,0 +1,224 @@
+# Django-shop SendCloud Russian translation file.
+# Copyright (C) 2020, Jacob Rief
+# This file is distributed under the same license as the PACKAGE package.
+# Yuriy Mamaev <execut>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-09 23:11+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+#: shop_sendcloud/management/commands/sendcloud_import.py:14
+msgid "Fetch shipping method fees from SendCloud."
+msgstr "Получение оплаты за способ доставки от SendCloud."
+
+#: shop_sendcloud/models/__init__.py:29
+msgid "Updated at"
+msgstr "Обновлено"
+
+#: shop_sendcloud/models/__init__.py:34
+msgid "Shipping Method"
+msgstr "Способ доставки"
+
+#: shop_sendcloud/models/__init__.py:35
+msgid "Shipping Methods"
+msgstr "Способы доставки"
+
+#: shop_sendcloud/models/__init__.py:50 shop_sendcloud/models/__init__.py:51
+msgid "Shipping Destination"
+msgstr "Направление доставки"
+
+#: shop_sendcloud/models/address.py:13
+msgid "Full name"
+msgstr "Полное имя"
+
+#: shop_sendcloud/models/address.py:18
+msgid "Company name"
+msgstr "Название компании"
+
+#: shop_sendcloud/models/address.py:25
+msgid "Address line"
+msgstr "Адрес"
+
+#: shop_sendcloud/models/address.py:30
+msgid "House number"
+msgstr "Дом"
+
+#: shop_sendcloud/models/address.py:35
+msgid "ZIP / Postal code"
+msgstr "Почтовый индекс"
+
+#: shop_sendcloud/models/address.py:40
+msgid "City"
+msgstr "Город"
+
+#: shop_sendcloud/models/address.py:44
+msgid "Country"
+msgstr "Страна"
+
+#: shop_sendcloud/models/address.py:52
+msgid "Shipping Address"
+msgstr "Адрес доставки"
+
+#: shop_sendcloud/models/address.py:53
+msgid "Shipping Addresses"
+msgstr "Адреса доставки"
+
+#: shop_sendcloud/models/address.py:62
+msgid "Billing Address"
+msgstr "Адрес оплаты"
+
+#: shop_sendcloud/models/address.py:63
+msgid "Billing Addresses"
+msgstr "Адреса оплаты"
+
+#: shop_sendcloud/models/customer.py:9
+msgid "Mrs."
+msgstr "Мис"
+
+#: shop_sendcloud/models/customer.py:9
+msgid "Mr."
+msgstr "Мистер"
+
+#: shop_sendcloud/models/customer.py:9
+msgid "(n/a)"
+msgstr "(н/о)"
+
+#: shop_sendcloud/models/customer.py:12
+msgid "Customer Number"
+msgstr "Номер пользователя"
+
+#: shop_sendcloud/models/customer.py:19
+msgid "Salutation"
+msgstr "Обращение"
+
+#: shop_sendcloud/models/customer.py:25
+msgid "Phone number"
+msgstr "Телефон"
+
+#: shop_sendcloud/modifiers.py:22
+msgid "Parcel can not be delivered: {}"
+msgstr "Посылка не может быть доставлена: {}"
+
+#: shop_sendcloud/modifiers.py:52
+msgid "Shipping costs"
+msgstr "Стоимость доставки"
+
+#: shop_sendcloud/modifiers.py:56
+msgid "Unable to ship"
+msgstr "Невозможно отправить"
+
+#: shop_sendcloud/modifiers.py:113
+msgid "Missing shipping label in response data['parcel']"
+msgstr "В ответе отсутствует пометка с доставкой data['parcel']"
+
+#: shop_sendcloud/serializers.py:14
+msgid "Announced"
+msgstr "Заявлено"
+
+#: shop_sendcloud/serializers.py:15
+msgid "Announced: not collected"
+msgstr "Заявлено: не собрано"
+
+#: shop_sendcloud/serializers.py:16
+msgid "Announcement failed"
+msgstr "Заявление не удалось"
+
+#: shop_sendcloud/serializers.py:17
+msgid "message': 'En route to sorting center"
+msgstr "сообщение': 'На пути к сортировочному центру"
+
+#: shop_sendcloud/serializers.py:18
+msgid "Delivery delayed"
+msgstr "Доставка отложена"
+
+#: shop_sendcloud/serializers.py:19
+msgid "Sorted"
+msgstr "Отсортировано"
+
+#: shop_sendcloud/serializers.py:20
+msgid "Not sorted"
+msgstr "Не отсортировано"
+
+#: shop_sendcloud/serializers.py:21
+msgid "Being sorted"
+msgstr "Сотрируется"
+
+#: shop_sendcloud/serializers.py:22
+msgid "Delivery attempt failed"
+msgstr "Попытка доставки не удалась"
+
+#: shop_sendcloud/serializers.py:23
+msgid "Delivered"
+msgstr "Доставлено"
+
+#: shop_sendcloud/serializers.py:24
+msgid "Awaiting customer pickup"
+msgstr "В ожидании самовывоза"
+
+#: shop_sendcloud/serializers.py:25
+msgid "Error collecting"
+msgstr "Ошибка сбора"
+
+#: shop_sendcloud/serializers.py:26
+msgid "Picked up from postoffice"
+msgstr "Получено из почтового отделения"
+
+#: shop_sendcloud/serializers.py:27
+msgid "Unable to deliver"
+msgstr "Невозможно доставить"
+
+#: shop_sendcloud/serializers.py:28
+msgid "Parcel en route"
+msgstr "Посылка в пути"
+
+#: shop_sendcloud/serializers.py:29
+msgid "Driver en route"
+msgstr "Водитель в пути"
+
+#: shop_sendcloud/serializers.py:30
+msgid "Picked up at service point"
+msgstr "Получено в пункте обслуживания"
+
+#: shop_sendcloud/serializers.py:31
+msgid "No label"
+msgstr "Без метки"
+
+#: shop_sendcloud/serializers.py:32
+msgid "Ready to send"
+msgstr "Готово к отправке"
+
+#: shop_sendcloud/serializers.py:33
+msgid "Being announced"
+msgstr "Объявляется"
+
+#: shop_sendcloud/serializers.py:34
+msgid "Cancelled"
+msgstr "Отменено"
+
+#: shop_sendcloud/serializers.py:35
+msgid "Submitting cancellation request"
+msgstr "Отправка запроса на отмену"
+
+#: shop_sendcloud/serializers.py:36
+msgid "Cancellation requested"
+msgstr "Запрос на отмену"
+
+#: shop_sendcloud/serializers.py:37
+msgid "Unknown status - check carrier track & trace page for more insights"
+msgstr "Неизвестный статус - проверьте страницу перевозчика и трэк груза для получения дополнительной информации"
+
+#: shop_sendcloud/serializers.py:75
+msgid "Purchase order issued"
+msgstr "Заказ на покупку оформлен"

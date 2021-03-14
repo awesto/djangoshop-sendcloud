@@ -10,6 +10,7 @@ from shop.serializers.cart import ExtraCartRow
 from shop.shipping.modifiers import ShippingModifier
 from shop.money import MoneyMaker
 from shop_sendcloud.models import ShippingMethod, ShippingDestination
+from shop_sendcloud.models.sender_adress import SendCloudSenderAddress
 
 EUR = MoneyMaker('EUR')  # at SendCloud, everything is charged in Euros
 
@@ -97,8 +98,14 @@ class SendcloudShippingModifierBase(ShippingModifier):
         if not cheapest_destination:
             msg = "No shipping destination for carrier: {carrier}"
             raise ValidationError(msg.format(carrier=carrier))
+        sender_adress = SendCloudSenderAddress.objects.filter(country=destination_country).first()
+        if not sender_adress:
+            sender_adress = SendCloudSenderAddress.objects.get(default_address=True)
+        if not sender_adress:
+            raise Exception(_('Check Sendcloud sender addresses and mark at least one as default'))
         parcel = dict(
             delivery.order.extra['sendcloud_data']['parcel'],
+            sender_address=sender_adress.id,
             order_number=delivery.order.get_number(),
             request_label=True,
             weight=str(weight),

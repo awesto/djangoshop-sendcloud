@@ -3,10 +3,11 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.conf.urls import url
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.http import HttpResponse
 from django.utils import timezone
 from shop.models.delivery import DeliveryModel
+from shop_sendcloud.models.sender_adress import SendCloudSenderAddress
 
 
 class SendCloudOrderAdminMixin:
@@ -62,3 +63,17 @@ class SendCloudOrderAdminMixin:
         if parcel_id:
             response['Content-Disposition'] = 'filename="parcel_label_{}.pdf"'.format(parcel_id)
         return response
+
+@admin.register(SendCloudSenderAddress)
+class SendCloudSenderAddressAdmin(admin.ModelAdmin):
+    list_display = ('default_address', 'street', 'house_number', 'city', 'country')
+    readonly_fields = ('id', 'company_name', 'contact_name', 'email', 'telephone', 'street', 'house_number', 'postal_code',  'postal_box', 'city', 'country', 'vat_number', 'coc_number', 'eori_number')
+    ordering = ['id', 'country']
+
+    def save_model(self, request, obj, form, change):
+        if SendCloudSenderAddress.objects.exists(default_address=True):
+            other_obj = SendCloudSenderAddress.objects.get(default_address=True)
+            if other_obj.id is not obj.id:
+                other_obj.default_address = False
+                other_obj.save()
+        return super().save_model(request, obj, form, change)

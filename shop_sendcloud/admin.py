@@ -71,7 +71,7 @@ class SendCloudSenderAddressAdmin(admin.ModelAdmin):
     ordering = ['id', 'country']
 
     def save_model(self, request, obj, form, change):
-        if SendCloudSenderAddress.objects.exists(default_address=True):
+        if SendCloudSenderAddress.objects.filter(default_address=True).exists():
             other_obj = SendCloudSenderAddress.objects.get(default_address=True)
             if other_obj.id is not obj.id:
                 other_obj.default_address = False
